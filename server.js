@@ -1,3 +1,4 @@
+console.clear();
 //  npm packages
 const dotenv = require('dotenv');
 const express = require('express');

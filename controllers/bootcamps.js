@@ -28,7 +28,7 @@ exports.getBootcamps = asyncHandler(async (req, res, next) => {
   );
 
   // Finding Resource
-  query = Bootcamp.find(JSON.parse(queryString));
+  query = Bootcamp.find(JSON.parse(queryString)).populate('courses');
 
   // Select Fields
   if (req.query.select) {
@@ -63,11 +63,11 @@ exports.getBootcamps = asyncHandler(async (req, res, next) => {
       limit,
     };
   }
-  if(startIndex > 0){
+  if (startIndex > 0) {
     pagination.prev = {
-      page : page - 1,
-      limit
-    }
+      page: page - 1,
+      limit,
+    };
   }
 
   //Executing Query
@@ -136,7 +136,7 @@ exports.updateBootcamp = asyncHandler(async (req, res, next) => {
 // ** @route   DELETE /api/v1/bootcamps/:id
 // ** @access  Private
 exports.deleteBootcamp = asyncHandler(async (req, res, next) => {
-  const bootcamp = await Bootcamp.findByIdAndRemove(req.params.id);
+  const bootcamp = await Bootcamp.findById(req.params.id);
   if (!bootcamp) {
     return next(
       new ErrorResponse(
@@ -145,6 +145,8 @@ exports.deleteBootcamp = asyncHandler(async (req, res, next) => {
       )
     );
   }
+
+  bootcamp.remove();
   res.status(200).json({ success: true, deletedData: bootcamp });
 });
 
