@@ -1,9 +1,12 @@
 console.clear();
+// core packages
+const path = require('path');
 //  npm packages
 const dotenv = require('dotenv');
 const express = require('express');
 const morgan = require('morgan');
 const colors = require('colors');
+const fileupload = require('express-fileupload');
 // Error Handler
 const errorHandler = require('./middlewares/error');
 // MongoDB connection config file
@@ -26,6 +29,12 @@ app.use(express.json());
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
+
+//FIle uploading
+app.use(fileupload());
+
+//set static folder
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Mount Middlewares
 
