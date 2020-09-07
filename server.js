@@ -7,6 +7,7 @@ const express = require('express');
 const morgan = require('morgan');
 const colors = require('colors');
 const fileupload = require('express-fileupload');
+const cookieParser = require('cookie-parser');
 // Error Handler
 const errorHandler = require('./middlewares/error');
 // MongoDB connection config file
@@ -20,10 +21,13 @@ connectDB();
 // route files
 const bootcampRoutes = require('./routes/bootcamps');
 const courseRoutes = require('./routes/courses');
+const authRoutes = require('./routes/auth');
 
 const app = express();
 // Body Parse
 app.use(express.json());
+//Cookie parser
+app.use(cookieParser());
 
 // Dev logging middleware
 if (process.env.NODE_ENV === 'development') {
@@ -41,6 +45,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Mount Routers
 app.use('/api/v1/bootcamps', bootcampRoutes);
 app.use('/api/v1/courses', courseRoutes);
+app.use('/api/v1/auth', authRoutes);
 
 app.use(errorHandler);
 // 404 PATH
