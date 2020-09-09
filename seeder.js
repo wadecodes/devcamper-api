@@ -12,6 +12,7 @@ dotenv.config({ path: './config/config.env' });
 // Load Models
 const Bootcamp = require('./models/Bootcamp');
 const Course = require('./models/Course');
+const User = require('./models/User');
 
 // Connect to DB
 mongoose.connect(process.env.MONGO_URI, {
@@ -30,7 +31,6 @@ const importBootcampsData = async () => {
     );
     await Bootcamp.create(bootcamps);
     console.log('Data Imported'.green.inverse);
-    process.exit();
   } catch (err) {
     console.log(err);
   }
@@ -42,7 +42,6 @@ const deleteBootcampData = async () => {
   try {
     await Bootcamp.deleteMany();
     console.log('Data Destroyed'.red.inverse);
-    process.exit();
   } catch (err) {
     console.log(err);
   }
@@ -67,18 +66,43 @@ const deleteCourseData = async () => {
   try {
     await Course.deleteMany();
     console.log('Data Destroyed'.red.inverse);
-    process.exit();
   } catch (err) {
     console.log(err);
   }
 };
 
-if (process.argv[2] === '-iB') {
-  importBootcampsData();
-} else if (process.argv[2] === '-dB') {
-  deleteBootcampData();
-} else if (process.argv[2] === '-iC') {
-  importCoursesData();
-} else if (process.argv[2] === '-dC') {
-  deleteCourseData();
+const importUsersData = async () => {
+  try {
+    const users = JSON.parse(
+      await fs.readFile(`${__dirname}/_data/users.json`, 'utf-8')
+    );
+    await User.create(users);
+    console.log('Data Imported'.green.inverse);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const deleteUserData = async () => {
+  try {
+    await User.deleteMany();
+    console.log('Data Destroyed'.red.inverse);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+async function init() {
+  if (process.argv[2] === '-i') {
+    await importUsersData();
+    await importBootcampsData();
+    await importCoursesData();
+  } else if (process.argv[2] === '-d') {
+    await deleteUserData();
+    await deleteBootcampData();
+    await deleteCourseData();
+  }
+  process.exit();
 }
+
+init();
