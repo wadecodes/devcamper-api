@@ -23,6 +23,7 @@ const bootcampRoutes = require('./routes/bootcamps');
 const courseRoutes = require('./routes/courses');
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/user');
+const reviewRoutes = require('./routes/reviews');
 
 const app = express();
 // Body Parse
@@ -48,6 +49,7 @@ app.use('/api/v1/bootcamps', bootcampRoutes);
 app.use('/api/v1/courses', courseRoutes);
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/users', userRoutes);
+app.use('/api/v1/reviews', reviewRoutes);
 
 app.use(errorHandler);
 // 404 PATH
