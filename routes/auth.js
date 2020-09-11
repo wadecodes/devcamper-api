@@ -3,7 +3,7 @@ const router = require('express').Router();
 const {
   registerUser,
   loginUser,
-  getMe,
+  logout,
   forgotPassword,
   resetpassword,
   updateDetails,
@@ -16,7 +16,7 @@ router.post('/register', registerUser);
 
 router.post('/login', loginUser);
 
-router.get('/me', protect, getMe);
+router.get('/logout', protect, logout);
 
 router.post('/forgotpassword', forgotPassword);
 
@@ -25,5 +25,7 @@ router.post('/resetpassword/:token', resetpassword);
 router.put('/updatedetails', protect, updateDetails);
 
 router.put('/updatepassword', protect, updatePassword);
+
+router.get('/logout')
 
 module.exports = router;

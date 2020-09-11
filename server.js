@@ -8,6 +8,12 @@ const morgan = require('morgan');
 const colors = require('colors');
 const fileupload = require('express-fileupload');
 const cookieParser = require('cookie-parser');
+const mongoSanitize = require('express-mongo-sanitize');
+const helmet = require('helmet');
+const xss = require('xss-clean');
+const rateLimit = require('express-rate-limit');
+const hpp = require('hpp');
+const cors = require('cors');
 // Error Handler
 const errorHandler = require('./middlewares/error');
 // MongoDB connection config file
@@ -29,9 +35,9 @@ const app = express();
 // Body Parse
 app.use(express.json());
 //Cookie parser
-app.use(cookieParser());
 
 // Dev logging middleware
+app.use(cookieParser());
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
@@ -39,6 +45,22 @@ if (process.env.NODE_ENV === 'development') {
 //FIle uploading
 app.use(fileupload());
 
+// Sanitize the data
+app.use(mongoSanitize());
+//set security header
+app.use(helmet());
+// prevent cross site scripting
+app.use(xss());
+// Rate Limitng 10 mins
+const limiter = rateLimit({
+  windowMs: 10 * 60 * 1000,
+  max: 100,
+});
+app.use(limiter);
+//prevent http param pollution
+app.use(hpp());
+//enable cors
+app.use(cors());
 //set static folder
 app.use(express.static(path.join(__dirname, 'public')));
 
